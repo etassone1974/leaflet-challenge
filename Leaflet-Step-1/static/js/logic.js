@@ -92,12 +92,12 @@ function createFeatures(earthquakeData) {
   
     // Define a baseMaps object to hold our base layers
     var baseMaps = {
-      "Light Map": lightmap
+      "Grayscale": lightmap
     };
   
     // Create overlay object to hold our overlay layer of the earthquakes
     var overlayMaps = {
-      Earthquakes: earthquakes
+      "Earthquakes": earthquakes
     };
   
     // Create our map, giving it the lightmap and earthquakes layers to display on load
