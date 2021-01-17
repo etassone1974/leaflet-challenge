@@ -9,6 +9,10 @@ html {
   height: 100%;
 }
 
+/*  Following four sections adapted from
+    https://leafletjs.com/examples/choropleth/
+*/
+
 .info {
   padding: 6px 8px;
   font: 14px/16px Arial, Helvetica, sans-serif;
