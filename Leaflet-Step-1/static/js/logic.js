@@ -5,33 +5,65 @@ var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_we
 // Perform a GET request to the query URL
 d3.json(queryUrl).then(function(data, err) {
 
-  // Print a data point to console for checking purposes  
-  console.log(data.features[0]);
-
-   // Once we get a response, send the data.features object to the createFeatures function
-   createFeatures(data.features);
+    // Print a data point to console for checking purposes  
+    console.log(data.features[0]);
+    console.log(data.features.length);
+    console.log(data.features[0].geometry.coordinates[0]);
+    console.log(data.features[0].geometry.coordinates[1]);
+    // Once we get a response, send the data.features object to the createFeatures function
+    createFeatures(data.features);
 
 // Error handling
 });
 
+function colorStyle(magnitude){
+    
+    var color = "";
+    if (magnitude > 5) {
+      color = "#f06b6b";
+    }
+    else if (magnitude > 4) {
+      color = "#f0a76b";
+    }
+    else if (magnitude > 3) {
+      color = "#f3ba4d";
+    }
+    else if (magnitude > 2) {
+        color = "#f3db4d"
+    }
+    else if (magnitude > 1) {
+        color = "#e1f34d"
+    }
+    else {
+      color = "#b7f34d";
+    }
+    return color;
+}
+
+var earthquakeMarkers = [];
+
 function createFeatures(earthquakeData) {
 
-    // Define a function we want to run once for each feature in the features array
-    // Give each feature a popup describing the place and time of the earthquake
-    function onEachFeature(feature, layer) {
-      layer.bindPopup("<h3>" + feature.properties.place +
-        "</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
-    }
-  
-    // Create a GeoJSON layer containing the features array on the earthquakeData object
-    // Run the onEachFeature function once for each piece of data in the array
-    var earthquakes = L.geoJSON(earthquakeData, {
-      onEachFeature: onEachFeature
-    });
-  
+    for (var i = 0; i < earthquakeData.length; i++) {
+        earthquakeMarkers.push(
+            L.circle([earthquakeData[i].geometry.coordinates[1], earthquakeData[i].geometry.coordinates[0]], {
+            fillOpacity: 1,
+            color: "black",
+            stroke: true,
+            weight: 0.5,
+            fillColor: colorStyle(earthquakeData[i].properties.mag),
+            radius: earthquakeData[i].properties.mag*10000
+        }).bindPopup("<h3>" + earthquakeData[i].properties.place + "<br>Magnitude: " + earthquakeData[i].properties.mag +
+        "</h3><hr><p>" + new Date(earthquakeData[i].properties.time) + "</p>").on('click',function(ev) {
+            ev.target.openPopup();
+        })
+    )}
+
+    var earthquakes = L.layerGroup(earthquakeMarkers);
     // Sending our earthquakes layer to the createMap function
     createMap(earthquakes);
-  }
+
+}
   
   function createMap(earthquakes) {
   
@@ -55,12 +87,36 @@ function createFeatures(earthquakeData) {
   
     // Create our map, giving it the streetmap and earthquakes layers to display on load
     var myMap = L.map("map", {
-      center: [
-        37.09, -95.71
-      ],
+      center: [37.09, -95.71],
       zoom: 5,
       layers: [lightmap, earthquakes]
     });
+
+    var legend = L.control({position: 'bottomright'});
+
+	legend.onAdd = function (myMap) {
+
+		var div = L.DomUtil.create('div', 'info legend'),
+			magnitudes = [0, 1, 2, 3, 4, 5],
+			labels = [],
+			from, to;
+
+		for (var i = 0; i < magnitudes.length; i++) {
+			from = magnitudes[i];
+			to = magnitudes[i + 1];
+
+			labels.push(
+				'<i style="background:' + colorStyle(from + 1) + '"></i> ' +
+				from + (to ? '&ndash;' + to : '+'));
+		}
+
+		div.innerHTML = labels.join('<br>');
+		return div;
+	};
+
+	legend.addTo(myMap);  
+
+
   
-  }
+}
   
