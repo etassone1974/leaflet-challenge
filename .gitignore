@@ -13,7 +13,9 @@ bin-release/
 *.ipa
 *.apk
 
-config.js
+# Config JavaScript files containing API key
+Leaflet-Step-1/static/js/config.js
+Leaflet-Step-2/static/js/config.js
 
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
 # should NOT be excluded as they contain compiler settings and other important
