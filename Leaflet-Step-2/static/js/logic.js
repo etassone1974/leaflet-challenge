@@ -172,33 +172,35 @@ function createFeatures(earthquakeData) {
     var legend = L.control({position: 'bottomright'});
 
     // Add the legend to the map display
-	legend.onAdd = function (myMap) {
+	  legend.onAdd = function (myMap) {
 
         // Set up the cutoffs for the magnitudes for the legend, 
         // the empty labels list and the from and to magnitudes
-		var div = L.DomUtil.create('div', 'info legend'),
-			magnitudes = [0, 1, 2, 3, 4, 5],
-			labels = [],
-			from, to;
+		  var div = L.DomUtil.create('div', 'info legend'),
+		  	magnitudes = [0, 1, 2, 3, 4, 5],
+			  labels = [],
+			  from, to;
         
         // Set the from and to magnitude for all levels of magitude
         // Levels are: 0-1, 1-2, 2-3, 3-4, 4-5, 5+
         // Push the levels and the correct colour on to the labels list
-		for (var i = 0; i < magnitudes.length; i++) {
-			from = magnitudes[i];
-			to = magnitudes[i + 1];
+		  for (var i = 0; i < magnitudes.length; i++) {
+			  from = magnitudes[i];
+			  to = magnitudes[i + 1];
 
-			labels.push(
-				'<i style="background:' + colorStyle(from + 1) + '"></i> ' +
-				from + (to ? '&ndash;' + to : '+'));
-		}
-        // Add HTML for legend and return div
+			  labels.push(
+			  	'<i style="background:' + colorStyle(from + 1) + '"></i> ' +
+				  from + (to ? '&ndash;' + to : '+'));
+      }
+      
+    // Add HTML for legend and return div
 		div.innerHTML = labels.join('<br>');
 		return div;
-	};
+
+  };
 
     // Add legend to map for display
-	legend.addTo(myMap);  
+	  legend.addTo(myMap);  
   
 }
   
